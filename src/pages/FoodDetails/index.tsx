@@ -66,6 +66,7 @@ interface Favorite {
   description: string;
   price: number;
   image_url: string;
+  formattedPrice?: string;
   extras?: Extra[];
 }
 
@@ -163,6 +164,7 @@ const FoodDetails: React.FC = () => {
   const toggleFavorite = useCallback(async () => {
     const favorite: Favorite = { ...food };
     delete favorite.extras;
+    delete favorite.formattedPrice;
 
     if (isFavorite) {
       await api.delete(`/favorites/${favorite.id}`);
