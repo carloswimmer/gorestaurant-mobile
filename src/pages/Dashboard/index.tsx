@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     async function loadFoods(): Promise<void> {
       try {
-        const response = await api.get('/foods');
+        const response = await api.get(`/foods?name_like=${searchValue}`);
 
         const foodsApi = response.data as Food[];
 
