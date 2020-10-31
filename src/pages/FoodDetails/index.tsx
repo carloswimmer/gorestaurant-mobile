@@ -70,6 +70,17 @@ interface Favorite {
   extras?: Extra[];
 }
 
+interface Order {
+  id?: number;
+  product_id: number;
+  name: string;
+  description: string;
+  price: number;
+  image_url?: string;
+  formattedPrice?: string;
+  extras: Extra[];
+}
+
 const FoodDetails: React.FC = () => {
   const [food, setFood] = useState({} as Food);
   const [extras, setExtras] = useState<Extra[]>([]);
@@ -187,7 +198,24 @@ const FoodDetails: React.FC = () => {
   }, [extras, food, foodQuantity]);
 
   async function handleFinishOrder(): Promise<void> {
-    // Finish the order and save on the API
+    try {
+      const order: Order = { ...food, product_id: food.id };
+      delete order.id;
+      delete order.image_url;
+      delete order.formattedPrice;
+      order.extras = [...extras];
+
+      await api.post('/orders', order);
+
+      navigation.navigate('DashboardStack');
+    } catch (error) {
+      Alert.alert(
+        'Atenção',
+        'Ocorreu um problema ao salvar seu pedido, tente novamente',
+      );
+
+      console.log(error);
+    }
   }
 
   // Calculate the correct icon name
