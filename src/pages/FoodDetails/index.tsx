@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useLayoutEffect,
 } from 'react';
-import { Image } from 'react-native';
+import { Alert, Image } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -73,7 +73,28 @@ const FoodDetails: React.FC = () => {
 
   useEffect(() => {
     async function loadFood(): Promise<void> {
-      // Load a specific food with extras based on routeParams id
+      try {
+        const foodId = routeParams.id;
+
+        const response = await api.get(`/foods/${foodId}`);
+
+        const foodApi: Food = response.data;
+
+        const formattedFood = {
+          ...foodApi,
+          formattedPrice: formatValue(foodApi.price),
+        };
+
+        setFood(formattedFood);
+        setExtras(formattedFood.extras);
+      } catch (error) {
+        Alert.alert(
+          'Atenção',
+          'Ocorreu um problema ao listar seu pedido, tente novamente',
+        );
+
+        console.log(error);
+      }
     }
 
     loadFood();
