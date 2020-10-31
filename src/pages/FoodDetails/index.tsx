@@ -85,8 +85,14 @@ const FoodDetails: React.FC = () => {
           formattedPrice: formatValue(foodApi.price),
         };
 
+        const formattedExtras = formattedFood.extras.map(extra => {
+          const formattedExtra = { ...extra, quantity: 0 };
+
+          return formattedExtra;
+        });
+
         setFood(formattedFood);
-        setExtras(formattedFood.extras);
+        setExtras([...formattedExtras]);
       } catch (error) {
         Alert.alert(
           'Atenção',
@@ -101,11 +107,27 @@ const FoodDetails: React.FC = () => {
   }, [routeParams]);
 
   function handleIncrementExtra(id: number): void {
-    // Increment extra quantity
+    const incrementedExtras = extras.map(extra => {
+      if (extra.id === id) {
+        return { ...extra, quantity: extra.quantity + 1 };
+      }
+
+      return extra;
+    });
+
+    setExtras([...incrementedExtras]);
   }
 
   function handleDecrementExtra(id: number): void {
-    // Decrement extra quantity
+    const decrementedExtras = extras.map(extra => {
+      if (extra.id === id && extra.quantity > 0) {
+        return { ...extra, quantity: extra.quantity - 1 };
+      }
+
+      return extra;
+    });
+
+    setExtras([...decrementedExtras]);
   }
 
   function handleIncrementFood(): void {
