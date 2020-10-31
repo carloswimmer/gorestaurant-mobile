@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView } from 'react-native';
+import { Alert, Image, ScrollView } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
@@ -59,7 +59,29 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     async function loadFoods(): Promise<void> {
-      // Load Foods from API
+      try {
+        const response = await api.get('/foods');
+
+        const foodsApi = response.data as Food[];
+
+        const formattedFoods = foodsApi.map(food => {
+          const formattedFood = {
+            ...food,
+            formattedPrice: formatValue(food.price),
+          };
+
+          return formattedFood;
+        });
+
+        setFoods([...formattedFoods]);
+      } catch (error) {
+        Alert.alert(
+          'Atenção',
+          'Ocorreu um problema ao listar os pratos, tente novamente',
+        );
+
+        console.log(error);
+      }
     }
 
     loadFoods();
@@ -67,7 +89,20 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     async function loadCategories(): Promise<void> {
-      // Load categories from API
+      try {
+        const response = await api.get('/categories');
+
+        const categoriesApi = response.data;
+
+        setCategories([...categoriesApi]);
+      } catch (error) {
+        Alert.alert(
+          'Atenção',
+          'Ocorreu um problema ao listar as categorias, tente novamente',
+        );
+
+        console.log(error);
+      }
     }
 
     loadCategories();
