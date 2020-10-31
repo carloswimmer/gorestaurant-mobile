@@ -27,7 +27,6 @@ import {
   FoodDescription,
   FoodPricing,
 } from './styles';
-import { AxiosResponse } from 'axios';
 
 interface Food {
   id: number;
@@ -56,7 +55,7 @@ const Dashboard: React.FC = () => {
   const navigation = useNavigation();
 
   async function handleNavigate(id: number): Promise<void> {
-    // Navigate do ProductDetails page
+    navigation.navigate('FoodDetails', { id });
   }
 
   useEffect(() => {
