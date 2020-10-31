@@ -27,12 +27,14 @@ import {
   FoodDescription,
   FoodPricing,
 } from './styles';
+import { AxiosResponse } from 'axios';
 
 interface Food {
   id: number;
   name: string;
   description: string;
   price: number;
+  category: number;
   thumbnail_url: string;
   formattedPrice: string;
 }
@@ -60,11 +62,15 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     async function loadFoods(): Promise<void> {
       try {
-        const response = await api.get(`/foods?name_like=${searchValue}`);
+        const response = await api.get('/foods', {
+          params: {
+            name_like: searchValue,
+            category_like: selectedCategory,
+          },
+        });
+        const foodsApi = response.data;
 
-        const foodsApi = response.data as Food[];
-
-        const formattedFoods = foodsApi.map(food => {
+        const formattedFoods = foodsApi.map((food: Food) => {
           const formattedFood = {
             ...food,
             formattedPrice: formatValue(food.price),
@@ -109,7 +115,13 @@ const Dashboard: React.FC = () => {
   }, []);
 
   function handleSelectCategory(id: number): void {
-    // Select / deselect category
+    if (selectedCategory === id) {
+      setSelectedCategory(undefined);
+
+      return;
+    }
+
+    setSelectedCategory(id);
   }
 
   return (
